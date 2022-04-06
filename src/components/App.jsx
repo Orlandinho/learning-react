@@ -20,27 +20,57 @@ function App() {
       completed: true
     },
   ])
+  const [todoInput, setTodoInput] = useState('')
+  const [idForTodo, setIdForTodo] = useState(todos.length + 1)
+
+  function addTodo(event) {
+    event.preventDefault()
+    if(todoInput.trim().length < 1) return
+    setTodos([...todos, {
+      id: idForTodo,
+      title: todoInput,
+      completed: false
+    }])
+
+    setTodoInput('')
+    setIdForTodo(prevIdForTodo => prevIdForTodo + 1)
+  }
+
+  function handleInput(event) {
+    setTodoInput(event.target.value)
+  }
+
+  function remainingTodos() {
+    return todos.filter(todo => todo.completed === false)
+  }
+
+  function deleteTodo(todoId) {
+    setTodos([...todos].filter(todo => todo.id !== todoId))
+  }
 
   return (
     <div className="todo-app-container">
       <div className="todo-app">
         <h2>Todo App</h2>
-        <form action="#">
+        <form action="/todos" onSubmit={addTodo}>
           <input type="text"
                  placeholder="What do you need to do?"
-                 className="todo-input"/>
+                 className="todo-input"
+                 value={todoInput}
+                 onChange={handleInput}
+          />
         </form>
 
         <ul className="todo-list">
           { todos.map((todo, index) =>
-            <li className="todo-item-container">
+            <li key={todo.id} className="todo-item-container">
             <div className="todo-item">
               <input type="text"/>
               <span className="todo-item-label">
                   {todo.title}
                 </span>
             </div>
-            <button className="x-button">
+            <button onClick={() => deleteTodo(todo.id)} className="x-button">
               <svg
                   className="x-button-icon"
                   fill="none"
@@ -63,7 +93,7 @@ function App() {
           <div>
             <div className="button">Check All</div>
           </div>
-          <span>{ todos.length } items remaining</span>
+          <span>{ remainingTodos().length } items remaining</span>
         </div>
         <div className="check-all-container">
           <div>

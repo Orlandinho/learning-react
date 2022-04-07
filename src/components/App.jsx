@@ -44,6 +44,14 @@ function App() {
     return todos.filter(todo => todo.completed === false)
   }
 
+  function clearCompleted() {
+    setTodos([...todos].filter(todo => ! todo.completed))
+  }
+
+  function checkAllTodos() {
+    setTodos([...todos].filter(todo => todo.completed = true))
+  }
+
   function deleteTodo(todoId) {
     setTodos([...todos].filter(todo => todo.id !== todoId))
   }
@@ -88,6 +96,22 @@ function App() {
     setTodos(updateTodo)
   }
 
+  function todosFiltered(filter) {
+    switch (filter) {
+      case 'all':
+        return todos;
+        break;
+      case 'completed':
+        return todos.filter(todo => todo.completed)
+        break;
+      case 'active':
+        return todos.filter(todo => ! todo.completed)
+        break;
+      default:
+        return todos;
+    }
+  }
+
   function cancelEdit(id) {
     const updateTodo = todos.map(todo => {
       if (todo.id === id) {
@@ -106,13 +130,15 @@ function App() {
         <TodoForm addTodo={addTodo}/>
         { todos.length > 0 ?
           <TodoList
-              todos={todos}
               completeTodo={completeTodo}
               editTodo={editTodo}
               updateTodo={updateTodo}
               cancelEdit={cancelEdit}
               deleteTodo={deleteTodo}
               remainingTodos={remainingTodos}
+              clearCompleted={clearCompleted}
+              checkAllTodos={checkAllTodos}
+              todosFiltered={todosFiltered}
           />
         :
           <NoTodos />

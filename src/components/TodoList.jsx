@@ -1,23 +1,29 @@
 import {useState} from "react";
 import PropTypes from "prop-types";
-import TodoForm from "./TodoForm";
+import TodoItemsRemaining from "./TodoItemsRemaining";
+import ClearComplete from "./ClearComplete";
+import CheckAll from "./CheckAll";
+import TodoFilters from "./TodoFilters";
 
 TodoList.propTypes = {
-    todos: PropTypes.array.isRequired,
     completeTodo: PropTypes.func.isRequired,
     editTodo: PropTypes.func.isRequired,
     updateTodo: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     deleteTodo: PropTypes.func.isRequired,
     remainingTodos: PropTypes.func.isRequired,
+    clearCompleted: PropTypes.func.isRequired,
+    checkAllTodos: PropTypes.func.isRequired,
 }
 
 function TodoList(props) {
 
+    const [filter, setFilter] = useState('all')
+
     return (
         <>
             <ul className="todo-list">
-                {props.todos.map(todo =>
+                {props.todosFiltered(filter).map(todo =>
                     <li key={todo.id} className="todo-item-container">
                         <div className="todo-item">
                             <input type="checkbox" checked={!!todo.completed} onChange={() => props.completeTodo(todo.id)}/>
@@ -25,8 +31,8 @@ function TodoList(props) {
                                 <span className={`todo-item-label ${todo.completed ? 'line-through' : ''}`}
                                       onDoubleClick={() => props.editTodo(todo.id)}
                                 >
-                  {todo.title}
-                  </span>
+                                {todo.title}
+                                </span>
                                 :
                                 <input type="text"
                                        onBlur={event => props.updateTodo(event, todo.id)}
@@ -64,18 +70,16 @@ function TodoList(props) {
 
             <div className="check-all-container">
                 <div>
-                    <div className="button">Check All</div>
+                    <CheckAll checkAllTodos={props.checkAllTodos}/>
                 </div>
-                <span>{props.remainingTodos().length} items remaining</span>
+                <TodoItemsRemaining remainingTodos={props.remainingTodos} />
             </div>
             <div className="check-all-container">
+                <TodoFilters setFilter={setFilter}
+                             filter={filter}
+                />
                 <div>
-                    <button className="button filter-button filter-button-active">All</button>
-                    <button className="button filter-button">Active</button>
-                    <button className="button filter-button">Completed</button>
-                </div>
-                <div>
-                    <button className="button">Clear Completed</button>
+                    <ClearComplete clearCompleted={props.clearCompleted}/>
                 </div>
             </div>
         </>

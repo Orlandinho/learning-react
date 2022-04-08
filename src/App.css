@@ -142,3 +142,11 @@ h2 {
 .name-label {
     margin-top: 15px;
 }
+
+.toggles-container {
+    margin: 20px 0;
+}
+
+.toggles-container button {
+    margin-right: 5px;
+}

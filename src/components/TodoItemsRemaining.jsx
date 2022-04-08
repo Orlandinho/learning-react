@@ -2,13 +2,13 @@ import {useState} from "react";
 import PropTypes from "prop-types";
 
 TodoItemsRemaining.propTypes = {
-    remainingTodos: PropTypes.func.isRequired
+    remaining: PropTypes.number.isRequired
 }
 
 function TodoItemsRemaining(props) {
 
     return (
-        <span>{props.remainingTodos().length} items remaining</span>
+        <span>{props.remaining} items remaining</span>
     )
 
 }

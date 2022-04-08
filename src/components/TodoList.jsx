@@ -11,7 +11,7 @@ TodoList.propTypes = {
     updateTodo: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     deleteTodo: PropTypes.func.isRequired,
-    remainingTodos: PropTypes.func.isRequired,
+    remaining: PropTypes.number.isRequired,
     clearCompleted: PropTypes.func.isRequired,
     checkAllTodos: PropTypes.func.isRequired,
 }
@@ -72,7 +72,7 @@ function TodoList(props) {
                 <div>
                     <CheckAll checkAllTodos={props.checkAllTodos}/>
                 </div>
-                <TodoItemsRemaining remainingTodos={props.remainingTodos} />
+                <TodoItemsRemaining remaining={props.remaining} />
             </div>
             <div className="check-all-container">
                 <TodoFilters setFilter={setFilter}

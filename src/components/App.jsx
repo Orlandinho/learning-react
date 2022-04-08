@@ -2,7 +2,7 @@ import "../App.css";
 import TodoList from "./TodoList";
 import NoTodos from "./NoTodos";
 import TodoForm from "./TodoForm";
-import {useState} from "react";
+import {useState, useRef, useEffect, useMemo} from "react";
 
 function App() {
 
@@ -27,9 +27,10 @@ function App() {
     },
   ])
   const [idForTodo, setIdForTodo] = useState(todos.length + 1)
+  const [name, setName] = useState('')
+  const nameInputEl = useRef(null)
 
   function addTodo(todo) {
-
     setTodos([...todos, {
       id: idForTodo,
       title: todo,
@@ -41,8 +42,10 @@ function App() {
   }
 
   function remainingTodos() {
-    return todos.filter(todo => todo.completed === false)
+    return todos.filter(todo => todo.completed === false).length
   }
+
+  const remaining = useMemo(remainingTodos, [todos])
 
   function clearCompleted() {
     setTodos([...todos].filter(todo => ! todo.completed))
@@ -107,8 +110,6 @@ function App() {
       case 'active':
         return todos.filter(todo => ! todo.completed)
         break;
-      default:
-        return todos;
     }
   }
 
@@ -119,13 +120,29 @@ function App() {
       }
       return todo
     })
-
     setTodos(updateTodo)
   }
+
+  useEffect(() => {
+    nameInputEl.current.focus()
+  }, [name])
 
   return (
     <div className="todo-app-container">
       <div className="todo-app">
+        <div className="name-container">
+          <h2>What's your name</h2>
+          <form action="/">
+            <input type="text"
+                   className="todo-input"
+                   placeholder="What's your name"
+                   ref={nameInputEl}
+                   value={name}
+                   onChange={event => setName(event.target.value)}
+            />
+          </form>
+          { name && <p className="name-label">Hello, {name}</p> }
+        </div>
         <h2>Todo App</h2>
         <TodoForm addTodo={addTodo}/>
         { todos.length > 0 ?
@@ -135,7 +152,7 @@ function App() {
               updateTodo={updateTodo}
               cancelEdit={cancelEdit}
               deleteTodo={deleteTodo}
-              remainingTodos={remainingTodos}
+              remaining={remaining}
               clearCompleted={clearCompleted}
               checkAllTodos={checkAllTodos}
               todosFiltered={todosFiltered}

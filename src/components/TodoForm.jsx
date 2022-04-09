@@ -1,39 +1,43 @@
-import {useState} from "react";
-import PropTypes from "prop-types";
+import { useContext, useState } from "react";
+import { TodosContext } from "../context/TodosContext";
 
-TodoForm.propTypes = {
-    addTodo: PropTypes.func,
-}
+function TodoForm() {
 
-function TodoForm(props) {
+  const { todos, setTodos, idForTodo, setIdForTodo } = useContext(TodosContext)
+  const [todoInput, setTodoInput] = useState('')
 
-const [todoInput, setTodoInput] = useState('')
+  function handleInput(event) {
+      setTodoInput(event.target.value)
+  }
 
-function handleInput(event) {
-    setTodoInput(event.target.value)
-}
+  function addTodo(event) {
+      event.preventDefault()
+      if(todoInput.trim().length < 1) {
+          return
+      }
 
-function handleSubmit(event) {
-    event.preventDefault()
-    if(todoInput.trim().length < 1) {
-        return
-    }
+    setTodos([...todos, {
+      id: idForTodo,
+      title: todoInput,
+      completed: false,
+      isEditing: false
+    }])
 
-    props.addTodo(todoInput)
+    setIdForTodo(prevIdForTodo => prevIdForTodo + 1)
 
     setTodoInput('')
-}
+  }
 
-return(
-    <form action="/" onSubmit={handleSubmit}>
-        <input type="text"
-               placeholder="What do you need to do?"
-               className="todo-input"
-               value={todoInput}
-               onChange={handleInput}
-        />
-    </form>
-)
+  return(
+      <form action="/" onSubmit={addTodo}>
+          <input type="text"
+                 placeholder="What do you need to do?"
+                 className="todo-input"
+                 value={todoInput}
+                 onChange={handleInput}
+          />
+      </form>
+  )
 
 }
 

@@ -5,6 +5,7 @@ import CheckAll from "./CheckAll";
 import TodoFilters from "./TodoFilters";
 import useToggle from "../custom_hooks/useToggle";
 import { TodosContext } from "../context/TodosContext";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 function TodoList() {
 
@@ -83,73 +84,85 @@ function TodoList() {
 
   return (
     <>
-      <ul className="todo-list">
+      <TransitionGroup component="ul" className="todo-list">
         {todosFiltered().map(todo =>
-          <li key={todo.id} className="todo-item-container">
-            <div className="todo-item">
-              <input type="checkbox" checked={!!todo.completed} onChange={() => completeTodo(todo.id)} />
-              {!todo.isEditing ?
-                <span className={`todo-item-label ${todo.completed ? "line-through" : ""}`}
-                      onDoubleClick={() => editTodo(todo.id)}
+          <CSSTransition key={todo.id} timeout={300} classNames="slide-horizontal">
+            <li className="todo-item-container">
+              <div className="todo-item">
+                <input type="checkbox" checked={!!todo.completed} onChange={() => completeTodo(todo.id)} />
+                {!todo.isEditing ?
+                  <span className={`todo-item-label ${todo.completed ? "line-through" : ""}`}
+                        onDoubleClick={() => editTodo(todo.id)}
+                  >
+                    {todo.title}
+                  </span>
+                  :
+                  <input type="text"
+                         onBlur={event => updateTodo(event, todo.id)}
+                         onKeyUp={event => {
+                           if (event.key === "Enter") {
+                             updateTodo(event, todo.id);
+                           } else if (event.key === "Escape") {
+                             cancelEdit(todo.id);
+                           }
+                         }}
+                         className="todo-item-input"
+                         defaultValue={todo.title}
+                         autoFocus
+                  />
+                }
+              </div>
+              <button onClick={() => deleteTodo(todo.id)} className="x-button">
+                <svg
+                  className="x-button-icon"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  {todo.title}
-                </span>
-                :
-                <input type="text"
-                       onBlur={event => updateTodo(event, todo.id)}
-                       onKeyUp={event => {
-                         if (event.key === "Enter") {
-                           updateTodo(event, todo.id);
-                         } else if (event.key === "Escape") {
-                           cancelEdit(todo.id);
-                         }
-                       }}
-                       className="todo-item-input"
-                       defaultValue={todo.title}
-                       autoFocus
-                />
-              }
-            </div>
-            <button onClick={() => deleteTodo(todo.id)} className="x-button">
-              <svg
-                className="x-button-icon"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </li>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </li>
+          </CSSTransition>
         )}
-      </ul>
+      </TransitionGroup>
 
       <div className="toggles-container">
         <button className="button" onClick={setVisibleOne}>Feature One Toggle</button>
         <button className="button" onClick={setVisibleTwo}>Feature Two Toggle</button>
       </div>
 
-      {visibleOne &&
+
+      <CSSTransition in={visibleOne}
+                     timeout={300}
+                     classNames="slide-vertical"
+                     unmountOnExit
+      >
         <div className="check-all-container">
           <div>
             <CheckAll />
           </div>
           <TodoItemsRemaining />
         </div>
-      }
-      {visibleTwo &&
+      </CSSTransition>
+
+      <CSSTransition in={visibleTwo}
+                     timeout={300}
+                     classNames="slide-vertical"
+                     unmountOnExit
+      >
         <div className="check-all-container">
           <TodoFilters />
           <div>
             <ClearComplete />
           </div>
         </div>
-      }
+      </CSSTransition>
     </>
   );
 

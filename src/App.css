@@ -13,8 +13,17 @@ body {
 
 .todo-app-container {
     min-height: 100vh;
-    padding: 10px;
     background: #f3f4f6;
+}
+
+.container {
+    margin: auto;
+    padding: 24px;
+    max-width: 48rem;
+}
+
+.active {
+    font-weight: bold;
 }
 
 .todo-app {
@@ -150,6 +159,31 @@ h2 {
 .toggles-container button {
     margin-right: 5px;
 }
+
+nav {
+    padding: 16px;
+    background: white;
+}
+
+nav ul {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    list-style-type: none;
+}
+
+li a {
+    text-decoration: none;
+}
+
+nav ul li:not(:first-child) {
+    margin-left: 16px;
+}
+
+/*transitions*/
 
 .slide-vertical-enter {
     opacity: 0;
